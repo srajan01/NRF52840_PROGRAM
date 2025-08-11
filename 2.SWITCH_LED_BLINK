@@ -1,0 +1,62 @@
+#include <stdbool.h>
+#include <stdint.h>
+#include "nrf_delay.h"
+#include "boards.h"
+#include "nrf_gpio.h"
+
+ #define SLEEP_TIME_MS 1000 //Time is 1 second
+ #define GPIO_PIN  NRF_GPIO_PIN_MAP(0,13) //deifine port 0 pin 13 as GPIO_PIN
+ #define GPIO_PIN1  NRF_GPIO_PIN_MAP(0,14)
+ #define GPIO_PIN2  NRF_GPIO_PIN_MAP(0,15)
+ #define GPIO_PIN3  NRF_GPIO_PIN_MAP(0,16)
+ #define b1  NRF_GPIO_PIN_MAP(0,11)
+ #define b2  NRF_GPIO_PIN_MAP(0,12)
+ #define b3  NRF_GPIO_PIN_MAP(0,24)
+ #define b4  NRF_GPIO_PIN_MAP(0,25)
+
+int main(void)
+{
+   nrf_gpio_cfg_input(b1,NRF_GPIO_PIN_PULLUP);
+   nrf_gpio_cfg_input(b2,NRF_GPIO_PIN_PULLUP);
+   nrf_gpio_cfg_input(b3,NRF_GPIO_PIN_PULLUP);
+   nrf_gpio_cfg_input(b4,NRF_GPIO_PIN_PULLUP);
+   nrf_gpio_cfg_output(GPIO_PIN);
+   nrf_gpio_cfg_output(GPIO_PIN1);
+   nrf_gpio_cfg_output(GPIO_PIN2);
+   nrf_gpio_cfg_output(GPIO_PIN3);
+   nrf_gpio_pin_set(GPIO_PIN);
+   nrf_gpio_pin_set(GPIO_PIN1);
+   nrf_gpio_pin_set(GPIO_PIN2);
+   nrf_gpio_pin_set(GPIO_PIN3);
+
+    while (true)
+    {
+      if(nrf_gpio_pin_read(b1)==0){
+      nrf_gpio_pin_clear(GPIO_PIN);
+      while(nrf_gpio_pin_read(b1)==0);
+      nrf_gpio_pin_set(GPIO_PIN);
+      }
+      else if(nrf_gpio_pin_read(b2)==0){
+      nrf_gpio_pin_clear(GPIO_PIN1);
+      while(nrf_gpio_pin_read(b2)==0);
+      nrf_gpio_pin_set(GPIO_PIN1);
+      }
+      else if(nrf_gpio_pin_read(b3)==0){
+      nrf_gpio_pin_clear(GPIO_PIN2);
+      while(nrf_gpio_pin_read(b3)==0);
+      nrf_gpio_pin_set(GPIO_PIN2);
+      }
+      else if(nrf_gpio_pin_read(b4)==0){
+      nrf_gpio_pin_clear(GPIO_PIN3);
+      while(nrf_gpio_pin_read(b4)==0);
+      nrf_gpio_pin_set(GPIO_PIN3);
+      }
+     /* else{
+      nrf_gpio_pin_clear(GPIO_PIN);
+      while(nrf_gpio_pin_read(GPIO_PIN1)==0);
+      nrf_gpio_pin_set(GPIO_PIN);
+      }*/
+    }
+}
+
+
