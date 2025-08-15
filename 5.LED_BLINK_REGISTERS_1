@@ -1,0 +1,43 @@
+#include <stdint.h>
+
+#define GPIO_BASE       0x50000000UL
+#define GPIO_OUT        (*(volatile uint32_t *)(GPIO_BASE + 0x504))
+#define GPIO_OUTSET     (*(volatile uint32_t *)(GPIO_BASE + 0x508))
+#define GPIO_OUTCLR     (*(volatile uint32_t *)(GPIO_BASE + 0x50C))
+#define GPIO_DIR        (*(volatile uint32_t *)(GPIO_BASE + 0x000))
+#define GPIO_PIN_CNF(n) (*(volatile uint32_t *)(GPIO_BASE + 0x700 + 4 * (n)))
+
+// LED pins (example: confirm with your board)
+#define LED1 13
+#define LED2 14
+#define LED3 15
+#define LED4 16
+
+void delay() {
+    for (volatile int i = 0; i < 1000000; i++);
+}
+
+void gpio_init() {
+    // Set pins as output
+    GPIO_DIR |= (1 << LED1) | (1 << LED2) | (1 << LED3) | (1 << LED4);
+
+    // Configure pin as standard output (from datasheet, DIR set is enough, but PIN_CNF gives more control)
+    GPIO_PIN_CNF(LED1) = 0x00000003; // Output, standard drive, no pull
+    GPIO_PIN_CNF(LED2) = 0x00000003;
+    GPIO_PIN_CNF(LED3) = 0x00000003;
+    GPIO_PIN_CNF(LED4) = 0x00000003;
+}
+
+int main(void) {
+    gpio_init();
+
+    while (1) {
+        // Turn ON LEDs (Clear output = drive low = LED ON if active-low)
+        GPIO_OUTCLR = (1 << LED1) | (1 << LED2) | (1 << LED3) | (1 << LED4);
+        delay();
+
+        // Turn OFF LEDs (Set output = drive high)
+        GPIO_OUTSET = (1 << LED1) | (1 << LED2) | (1 << LED3) | (1 << LED4);
+        delay();
+    }
+}
